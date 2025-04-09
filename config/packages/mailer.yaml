@@ -1,3 +1,15 @@
 framework:
     mailer:
         dsn: '%env(MAILER_DSN)%'
+        
+services:
+    App\Service\EmailReminderService:
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $mailer: '@mailer'
+            
+    scheduled.reminder_sender:
+        class: Symfony\Component\Scheduler\Messenger\ScheduledStamp
+        arguments:
+            - '@App\Command\SendReservationRemindersCommand'
+            - '@0 18 * * *'

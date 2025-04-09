@@ -1,0 +1,5 @@
+api_platform:
+    title: 'Hooly Foodtruck API'
+    description: 'API pour gérer les réservations de foodtrucks'
+    version: '1.0.0'
+    enable_swagger_ui: true

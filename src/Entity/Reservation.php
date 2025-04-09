@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ReservationRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ReservationRepository::class)]
 class Reservation
@@ -23,6 +24,8 @@ class Reservation
     private ?Campus $campus = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Assert\NotBlank(message: "La date de réservation est obligatoire.")]
+    #[Assert\Type("\DateTimeInterface", message: "La date doit être au format valide.")]
     private ?\DateTimeInterface $date_reservation = null;
 
     public function getId(): ?int
@@ -64,5 +67,10 @@ class Reservation
         $this->campus = $campus;
 
         return $this;
+    }
+
+    public function getFoodtruckEmail(): ?string
+    {
+        return $this->foodtruck ? $this->foodtruck->getEmail() : null;
     }
 }
