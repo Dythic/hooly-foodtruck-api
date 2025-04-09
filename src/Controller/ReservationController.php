@@ -116,7 +116,6 @@ class ReservationController extends AbstractController
             return new JsonResponse(['message' => 'La date doit être au format YYYY-MM-DD.'], JsonResponse::HTTP_BAD_REQUEST);
         }
 
-        // Vérifier que la date n'est pas dans le passé ni aujourd'hui
         $today = new \DateTime();
         $today->setTime(0, 0, 0);
         $tomorrow = clone $today;
@@ -135,7 +134,6 @@ class ReservationController extends AbstractController
             return new JsonResponse(['message' => 'Foodtruck ou Campus non trouvé'], JsonResponse::HTTP_NOT_FOUND);
         }
 
-        // Vérifier le nombre de réservations hebdomadaires sur ce campus
         $weekStart = clone $dateObject;
         $weekEnd = clone $dateObject;
         $weekStart->modify('monday this week')->setTime(0, 0, 0);
@@ -160,7 +158,6 @@ class ReservationController extends AbstractController
             ], JsonResponse::HTTP_BAD_REQUEST);
         }
 
-        // Vérifier que le foodtruck n'est pas présent sur l'autre campus le même jour
         $otherCampusReservation = $em->createQueryBuilder()
             ->select('r')
             ->from(Reservation::class, 'r')
@@ -179,7 +176,6 @@ class ReservationController extends AbstractController
             ], JsonResponse::HTTP_BAD_REQUEST);
         }
 
-        // Vérifier s'il y a déjà une réservation pour ce foodtruck sur ce campus cette journée
         $existingReservation = $em->createQueryBuilder()
             ->select('r')
             ->from(Reservation::class, 'r')
@@ -198,7 +194,6 @@ class ReservationController extends AbstractController
             ], JsonResponse::HTTP_BAD_REQUEST);
         }
 
-        // Vérifier la disponibilité des créneaux
         $dayOfWeek = strtolower($dateObject->format('l'));
         $availableSlots = $campus->getAvailableSlots();
         
@@ -208,7 +203,6 @@ class ReservationController extends AbstractController
             ], JsonResponse::HTTP_BAD_REQUEST);
         }
 
-        // Compter les réservations existantes pour ce jour
         $existingReservations = $em->createQueryBuilder()
             ->select('COUNT(r)')
             ->from(Reservation::class, 'r')

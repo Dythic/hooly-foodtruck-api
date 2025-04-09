@@ -10,7 +10,6 @@ class CampusFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        // Campus de Paris: 7 emplacements disponibles, sauf le vendredi où il n'y en a que 6
         $paris = new Campus();
         $paris->setName('Paris');
         $paris->setAvailableSlots([
@@ -24,7 +23,6 @@ class CampusFixtures extends Fixture
         ]);
         $manager->persist($paris);
         
-        // Campus de Lyon: 5 emplacements disponibles, sauf le lundi où il n'y en a que 4
         $lyon = new Campus();
         $lyon->setName('Lyon');
         $lyon->setAvailableSlots([

@@ -1,15 +1,9 @@
 nelmio_api_doc:
     documentation:
         info:
-            title: API Hooly Foodtrucks
-            description: API pour la gestion des réservations de foodtrucks sur les campus de Hooly
+            title: Hooly Foodtruck API
+            description: API pour la gestion des réservations de foodtrucks
             version: 1.0.0
-        components:
-            securitySchemes:
-                Bearer:
-                    type: http
-                    scheme: bearer
-                    bearerFormat: JWT
     areas:
         path_patterns:
             - ^/api(?!/doc$)

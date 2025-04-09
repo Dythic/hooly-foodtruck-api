@@ -20,7 +20,6 @@ class EmailReminderService
     
     public function sendReminders(): void
     {
-        // Obtenir les réservations pour demain
         $tomorrow = new \DateTime('tomorrow');
         $tomorrow->setTime(0, 0, 0);
         
@@ -35,8 +34,6 @@ class EmailReminderService
             $foodtruck = $reservation->getFoodtruck();
             $campus = $reservation->getCampus();
             
-            // Ici, vous devriez récupérer l'email du foodtruck 
-            // Pour l'exemple, nous allons supposer qu'il y a un email fictif
             $foodtruckEmail = 'contact@' . strtolower(str_replace(' ', '', $foodtruck->getName())) . '.com';
             
             $email = (new Email())
