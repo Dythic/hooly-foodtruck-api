@@ -1,87 +1,126 @@
-Hooly Foodtruck API
-Une API permettant aux foodtrucks de réserver des emplacements sur les campus de Hooly et aux employés de consulter les disponibilités.
-Spécifications techniques
+# Hooly Foodtruck API
 
-PHP 8.4
-Symfony 7.2
-Base de données: MySQL/PostgreSQL (configurable)
-Documentation API: OpenAPI/Swagger
+## Gestion des Réservations de Foodtrucks
 
-Fonctionnalités
+### Contexte du Projet
 
-Gestion des Foodtrucks (création, consultation)
-Gestion des Réservations (création, annulation, consultation)
-Consultation des Disponibilités par campus et par date
-Envoi automatique d'emails de rappel la veille des réservations
+L'API Hooly Foodtruck permet aux foodtrucks de réserver des emplacements sur les campus de Hooly, avec des règles de gestion spécifiques.
 
-Installation
+### Campus Disponibles
 
-Cloner le dépôt
+- **Paris**
+  - 7 emplacements disponibles
+  - 6 emplacements le vendredi
 
-bashgit clone https://github.com/yourusername/hooly-foodtruck-api.git
+- **Lyon**
+  - 5 emplacements disponibles
+  - 4 emplacements le lundi
+
+### Règles Métier
+
+1. **Réservations**
+   - Maximum 1 emplacement par campus par semaine
+   - Un foodtruck ne peut pas être sur deux campus le même jour
+   - Réservations minimum 1 jour à l'avance
+   - Pas de réservation pour le jour même ou une date passée
+
+### Fonctionnalités
+
+#### Gestion des Foodtrucks
+- Enregistrement d'un nouveau foodtruck
+- Consultation de la liste des foodtrucks
+
+#### Gestion des Réservations
+- Création de réservation
+- Annulation de réservation
+- Consultation des réservations par campus et date
+
+#### Disponibilités
+- Affichage des créneaux disponibles
+- Vérification dynamique des slots
+
+#### Système de Rappels
+- Envoi automatique d'emails à 18h
+- Informations sur les réservations du lendemain
+
+### Technologies Utilisées
+
+- **Langage** : PHP 8.4
+- **Framework** : Symfony 7.2
+- **Base de données** : MySQL/MariaDB
+- **Documentation API** : OpenAPI/Swagger
+- **Gestion des emails** : Symfony Mailer
+
+### Prérequis
+
+- PHP 8.4+
+- Composer
+- MySQL/MariaDB
+- Symfony CLI
+
+### Installation
+
+1. Cloner le dépôt
+```bash
+git clone [URL_DU_DEPOT]
 cd hooly-foodtruck-api
+```
 
-Installer les dépendances
+2. Installer les dépendances
+```bash
+composer install
+```
 
-bashcomposer install
-
-Configurer la base de données dans le fichier .env
-
-DATABASE_URL="mysql://db_user:db_password@127.0.0.1:3306/db_name"
-
-Configurer le mailer dans le fichier .env
-
-MAILER_DSN=smtp://user:pass@smtp.example.com:25
-
-Créer la base de données et effectuer les migrations
-
-bashphp bin/console doctrine:database:create
+3. Configuration de la base de données
+```bash
+php bin/console doctrine:database:create
 php bin/console doctrine:migrations:migrate
+php bin/console doctrine:fixtures:load
+```
 
-Charger les données initiales
+### 🧪 Endpoints API
 
-bashphp bin/console doctrine:fixtures:load
+#### Foodtrucks
+- `POST /api/foodtrucks` : Créer un foodtruck
+- `GET /api/foodtrucks` : Lister les foodtrucks
 
-Lancer le serveur de développement
+#### Réservations
+- `POST /api/reservations` : Créer une réservation
+- `DELETE /api/reservations/{id}` : Annuler une réservation
+- `GET /api/reservations` : Consulter les réservations
 
-bashsymfony server:start
-Architecture et choix techniques
-Structure du projet
-Le projet suit l'architecture MVC de Symfony avec :
+#### Campus
+- `GET /api/campus` : Lister les campus
+- `GET /api/campus/{id}/available-slots` : Vérifier les créneaux disponibles
 
-Controllers : gestion des requêtes HTTP
-Entities : modèles de données
-Repositories : accès aux données
-Services : logique métier
-Commands : commandes console pour les tâches planifiées
+### 📧 Système de Rappels
 
-Base de données
+Commande pour envoyer les rappels :
+```bash
+php bin/console app:send-reservation-reminders
+```
 
-La base de données utilise Doctrine ORM pour la gestion des entités
-Les relations entre entités sont :
+### 🔒 Sécurité
 
-OneToMany entre Campus et Reservation
-OneToMany entre Foodtruck et Reservation
+- Validation des entrées
+- Protection contre les injections
+- Contraintes métier intégrées
 
+### 🔍 Documentation API
 
+Accéder à Swagger UI :
+```
+/api/doc
+```
 
-Sécurité
+### 🛠 Développement
 
-Validation des entrées utilisateur
-Protection contre les injections SQL via Doctrine
-Utilisation des types de données appropriés
+- Mode développement : `symfony server:start`
+- Vérifier les logs : `var/log/dev.log`
 
-Système d'emails
+### 📝 Notes Importantes
 
-Utilisation de Symfony Mailer pour l'envoi des emails
-Command pour l'envoi des rappels, pouvant être planifiée via CRON ou Symfony Scheduler
+- Respecter les règles métier de réservation
+- Les emails sont interceptés en développement
+- Utiliser MailHog recommandé pour tester les emails
 
-Documentation API
-La documentation de l'API est disponible à l'adresse /api/doc une fois le serveur lancé.
-Principales routes :
-
-GET /api/foodtrucks : Liste des foodtrucks
-POST /api/foodtrucks : Création d'un foodtruck
-GET /api/reservations : Liste des réservations par campus et date
-POST /api/reservations : Création d'une réservation
-DELETE /api/reservations/{id} : Annulation d'une reservation
